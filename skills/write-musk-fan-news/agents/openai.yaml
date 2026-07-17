@@ -1,4 +1,4 @@
 interface:
-  display_name: "马斯克新闻与硬核鸡汤"
-  short_description: "把科技新闻写成马斯克中心、强冲突且有方法论升华的原创视频文案"
-  default_prompt: "Use $write-musk-fan-news to turn this Musk news or story into an original Chinese video script with evidence-backed motivational framing."
+  display_name: "马斯克新闻、人物与观点叙事"
+  short_description: "用可追溯马斯克资料库创作新闻、人物故事、观点和原创视频文案"
+  default_prompt: "Use $write-musk-fan-news to enrich this Musk news with a verified historical story, method, or short quotation and write an original Chinese video script."

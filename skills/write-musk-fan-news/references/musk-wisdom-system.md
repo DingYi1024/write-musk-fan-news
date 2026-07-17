@@ -11,7 +11,9 @@
 
 ## 来源与使用边界
 
-本参考库根据 Eric Jorgenson 编著的 *The Book of Elon: Elon Musk's Most Useful Ideas, in His Own Words* 提炼。书中材料按使命、工作、创业与人类未来组织，并附有来源索引和“69个核心方法”。
+本文件只负责《The Book of Elon》内容的“鸡汤与人物升华”应用。历史事实、公司故事、方法、短引语、书单及来源等级先查 [book-of-elon-sourcebook.md](book-of-elon-sourcebook.md)。
+
+该来源库根据 Eric Jorgenson 编著的 *The Book of Elon: Elon Musk's Most Useful Ideas, in His Own Words* 提炼。书中材料按使命、工作、创业与人类未来组织，并附有来源索引和“69个核心方法”。
 
 把该书用于主题导航和人物方法提炼，不把PDF或大段原文放入输出或公开仓库。
 

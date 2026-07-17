@@ -50,12 +50,23 @@ def main() -> int:
     required_files = [
         SKILL_DIR / "agents" / "openai.yaml",
         SKILL_DIR / "references" / "style-system.md",
+        SKILL_DIR / "references" / "book-of-elon-sourcebook.md",
         SKILL_DIR / "references" / "rewrite-protocol.md",
         SKILL_DIR / "references" / "platform-adapters.md",
         SKILL_DIR / "references" / "musk-wisdom-system.md",
     ]
     for path in required_files:
         require(path.is_file(), f"Missing required file: {path.relative_to(ROOT)}")
+
+    sourcebook = (SKILL_DIR / "references" / "book-of-elon-sourcebook.md").read_text(encoding="utf-8")
+    require(len(re.findall(r"^### S\d{2}\b", sourcebook, re.MULTILINE)) >= 18,
+            "Sourcebook must contain at least 18 story anchors")
+    require(len(re.findall(r"^\| M\d{2}\b", sourcebook, re.MULTILINE)) >= 20,
+            "Sourcebook must contain at least 20 methods")
+    require(len(re.findall(r"^\| Q\d{2}\b", sourcebook, re.MULTILINE)) >= 13,
+            "Sourcebook must contain at least 13 short quotations")
+    for heading in ("## 来源等级", "## 创业时间线", "## 马斯克书单选题"):
+        require(heading in sourcebook, f"Sourcebook is missing section: {heading}")
 
     print(f"Repository is valid: {SKILL_NAME} v{version}")
     return 0
