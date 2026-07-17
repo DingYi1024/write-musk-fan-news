@@ -1,4 +1,4 @@
 interface:
   display_name: "马斯克新闻与常青人物叙事"
-  short_description: "有新闻写热点，无新闻从人物来源库自动选题续更"
-  default_prompt: "Use $write-musk-fan-news to choose a verified Musk news or evergreen biographical angle and write an original Chinese video script."
+  short_description: "只说写一篇马斯克，自动选题并交付90秒口播稿"
+  default_prompt: "Use $write-musk-fan-news 写一篇马斯克；自动选题，只给首选标题和90秒中文口播稿。"
