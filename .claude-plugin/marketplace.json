@@ -1,0 +1,30 @@
+{
+  "name": "dingyi-musk-skills",
+  "owner": {
+    "name": "DingYi1024"
+  },
+  "metadata": {
+    "description": "把马斯克相关新闻、科技新闻和已有内容重构成原创中文视频文案",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "write-musk-fan-news",
+      "description": "马斯克中心的科技新闻叙事写作 Skill，支持原创写作、对标重构和多平台适配。",
+      "source": "./",
+      "strict": false,
+      "version": "0.1.0",
+      "category": "content-creation",
+      "keywords": [
+        "elon-musk",
+        "news",
+        "copywriting",
+        "short-video",
+        "chinese"
+      ],
+      "skills": [
+        "./skills/write-musk-fan-news"
+      ]
+    }
+  ]
+}
