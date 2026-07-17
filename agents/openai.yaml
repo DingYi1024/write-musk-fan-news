@@ -1,0 +1,4 @@
+interface:
+  display_name: "马斯克新闻叙事"
+  short_description: "把科技新闻重构成马斯克中心、强冲突、强争议的原创视频文案"
+  default_prompt: "Use $write-musk-fan-news to turn this news item into an original platform-ready Chinese video script."
