@@ -23,6 +23,9 @@ def main() -> int:
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     require(bool(re.fullmatch(r"\d+\.\d+\.\d+", version)), "VERSION must use semantic versioning")
 
+    source_pdfs = [path.relative_to(ROOT) for path in ROOT.rglob("*.pdf")]
+    require(not source_pdfs, f"Do not commit source PDFs: {source_pdfs}")
+
     manifest_path = ROOT / ".claude-plugin" / "marketplace.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     require(manifest["metadata"]["version"] == version, "Marketplace metadata version differs from VERSION")
@@ -49,6 +52,7 @@ def main() -> int:
         SKILL_DIR / "references" / "style-system.md",
         SKILL_DIR / "references" / "rewrite-protocol.md",
         SKILL_DIR / "references" / "platform-adapters.md",
+        SKILL_DIR / "references" / "musk-wisdom-system.md",
     ]
     for path in required_files:
         require(path.is_file(), f"Missing required file: {path.relative_to(ROOT)}")
