@@ -5,15 +5,15 @@
   },
   "metadata": {
     "description": "用新闻池和常青人物库持续创作有来源的马斯克中文视频文案",
-    "version": "0.3.1"
+    "version": "0.3.2"
   },
   "plugins": [
     {
       "name": "write-musk-fan-news",
-      "description": "一句“写一篇马斯克”即可自动选新闻或常青人物题并交付短视频稿。",
+      "description": "一句“写一篇马斯克”自动选题，并用固定品牌口头禅交付短视频稿。",
       "source": "./",
       "strict": false,
-      "version": "0.3.1",
+      "version": "0.3.2",
       "category": "content-creation",
       "keywords": [
         "elon-musk",
