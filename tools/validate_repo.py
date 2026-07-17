@@ -52,6 +52,7 @@ def main() -> int:
     required_files = [
         SKILL_DIR / "agents" / "openai.yaml",
         SKILL_DIR / "references" / "style-system.md",
+        SKILL_DIR / "references" / "source-narration-system.md",
         SKILL_DIR / "references" / "book-of-elon-sourcebook.md",
         SKILL_DIR / "references" / "evergreen-content-engine.md",
         SKILL_DIR / "references" / "musk-life-relationships-sourcebook.md",
@@ -65,6 +66,12 @@ def main() -> int:
     style_text = (SKILL_DIR / "references" / "style-system.md").read_text(encoding="utf-8")
     require("## 品牌声纹" in style_text and "你肯定不敢相信" in style_text,
             "Style system must define the signature hook system")
+
+    narration = (SKILL_DIR / "references" / "source-narration-system.md").read_text(encoding="utf-8")
+    for heading in ("## 核心原则", "## 四级来源路由", "## 前台口播规则", "## 原创与合规边界"):
+        require(heading in narration, f"Source narration system is missing section: {heading}")
+    require("单一媒体独家" in narration and "后台来源卡" in narration,
+            "Source narration system must protect attribution and internal sourcing")
 
     sourcebook = (SKILL_DIR / "references" / "book-of-elon-sourcebook.md").read_text(encoding="utf-8")
     require(len(re.findall(r"^### S\d{2}\b", sourcebook, re.MULTILINE)) >= 18,
