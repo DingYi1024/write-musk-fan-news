@@ -46,6 +46,8 @@ def main() -> int:
             "SKILL.md name is incorrect")
     require(re.search(r"^description:\s*\S+", frontmatter, re.MULTILINE) is not None,
             "SKILL.md description is missing")
+    require("你肯定不敢相信" in skill_text,
+            "SKILL.md must define the signature opening phrase")
 
     required_files = [
         SKILL_DIR / "agents" / "openai.yaml",
@@ -59,6 +61,10 @@ def main() -> int:
     ]
     for path in required_files:
         require(path.is_file(), f"Missing required file: {path.relative_to(ROOT)}")
+
+    style_text = (SKILL_DIR / "references" / "style-system.md").read_text(encoding="utf-8")
+    require("## 品牌声纹" in style_text and "你肯定不敢相信" in style_text,
+            "Style system must define the signature hook system")
 
     sourcebook = (SKILL_DIR / "references" / "book-of-elon-sourcebook.md").read_text(encoding="utf-8")
     require(len(re.findall(r"^### S\d{2}\b", sourcebook, re.MULTILINE)) >= 18,
