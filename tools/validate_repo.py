@@ -23,6 +23,9 @@ def main() -> int:
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     require(bool(re.fullmatch(r"\d+\.\d+\.\d+", version)), "VERSION must use semantic versioning")
 
+    source_pdfs = [path.relative_to(ROOT) for path in ROOT.rglob("*.pdf")]
+    require(not source_pdfs, f"Do not commit source PDFs: {source_pdfs}")
+
     manifest_path = ROOT / ".claude-plugin" / "marketplace.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     require(manifest["metadata"]["version"] == version, "Marketplace metadata version differs from VERSION")
@@ -47,11 +50,35 @@ def main() -> int:
     required_files = [
         SKILL_DIR / "agents" / "openai.yaml",
         SKILL_DIR / "references" / "style-system.md",
+        SKILL_DIR / "references" / "book-of-elon-sourcebook.md",
+        SKILL_DIR / "references" / "evergreen-content-engine.md",
+        SKILL_DIR / "references" / "musk-life-relationships-sourcebook.md",
         SKILL_DIR / "references" / "rewrite-protocol.md",
         SKILL_DIR / "references" / "platform-adapters.md",
+        SKILL_DIR / "references" / "musk-wisdom-system.md",
     ]
     for path in required_files:
         require(path.is_file(), f"Missing required file: {path.relative_to(ROOT)}")
+
+    sourcebook = (SKILL_DIR / "references" / "book-of-elon-sourcebook.md").read_text(encoding="utf-8")
+    require(len(re.findall(r"^### S\d{2}\b", sourcebook, re.MULTILINE)) >= 18,
+            "Sourcebook must contain at least 18 story anchors")
+    require(len(re.findall(r"^\| M\d{2}\b", sourcebook, re.MULTILINE)) >= 20,
+            "Sourcebook must contain at least 20 methods")
+    require(len(re.findall(r"^\| Q\d{2}\b", sourcebook, re.MULTILINE)) >= 13,
+            "Sourcebook must contain at least 13 short quotations")
+    for heading in ("## 来源等级", "## 创业时间线", "## 马斯克书单选题"):
+        require(heading in sourcebook, f"Sourcebook is missing section: {heading}")
+
+    evergreen = (SKILL_DIR / "references" / "musk-life-relationships-sourcebook.md").read_text(encoding="utf-8")
+    require(len(re.findall(r"^### E\d{2}\b", evergreen, re.MULTILINE)) >= 30,
+            "Evergreen sourcebook must contain at least 30 fact cards")
+    for heading in ("## 来源等级", "## 快速检索路由", "## 公共来源入口", "## 发布前记录模板"):
+        require(heading in evergreen, f"Evergreen sourcebook is missing section: {heading}")
+
+    engine = (SKILL_DIR / "references" / "evergreen-content-engine.md").read_text(encoding="utf-8")
+    for heading in ("## 八个常青栏目", "## 自动选题流程", "## 隐私与敏感内容边界", "## 时效分级"):
+        require(heading in engine, f"Evergreen engine is missing section: {heading}")
 
     print(f"Repository is valid: {SKILL_NAME} v{version}")
     return 0

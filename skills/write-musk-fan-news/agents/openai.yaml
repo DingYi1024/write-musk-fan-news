@@ -1,4 +1,4 @@
 interface:
-  display_name: "马斯克新闻叙事"
-  short_description: "把科技新闻重构成马斯克中心、强冲突、强争议的原创视频文案"
-  default_prompt: "Use $write-musk-fan-news to turn this news item into an original platform-ready Chinese video script."
+  display_name: "马斯克新闻与常青人物叙事"
+  short_description: "只说写一篇马斯克，自动选题并交付90秒口播稿"
+  default_prompt: "Use $write-musk-fan-news 写一篇马斯克；自动选题，只给首选标题和90秒中文口播稿。"
