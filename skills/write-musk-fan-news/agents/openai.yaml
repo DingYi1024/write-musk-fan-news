@@ -1,4 +1,4 @@
 interface:
-  display_name: "马斯克新闻、人物与观点叙事"
-  short_description: "用可追溯马斯克资料库创作新闻、人物故事、观点和原创视频文案"
-  default_prompt: "Use $write-musk-fan-news to enrich this Musk news with a verified historical story, method, or short quotation and write an original Chinese video script."
+  display_name: "马斯克新闻与常青人物叙事"
+  short_description: "有新闻写热点，无新闻从人物来源库自动选题续更"
+  default_prompt: "Use $write-musk-fan-news to choose a verified Musk news or evergreen biographical angle and write an original Chinese video script."

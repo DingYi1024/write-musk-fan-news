@@ -4,22 +4,24 @@
     "name": "DingYi1024"
   },
   "metadata": {
-    "description": "用可追溯马斯克资料库把新闻、人物故事、观点和方法重构成原创中文视频文案",
-    "version": "0.2.0"
+    "description": "用新闻池和常青人物库持续创作有来源的马斯克中文视频文案",
+    "version": "0.3.0"
   },
   "plugins": [
     {
       "name": "write-musk-fan-news",
-      "description": "马斯克中心的新闻与人物叙事 Skill，内置历史故事、方法、观点、书单和短引语来源库。",
+      "description": "马斯克中心的新闻与人物叙事 Skill；没有新闻时可从家庭、关系、搭档、兴趣等常青库自动选题。",
       "source": "./",
       "strict": false,
-      "version": "0.2.0",
+      "version": "0.3.0",
       "category": "content-creation",
       "keywords": [
         "elon-musk",
         "news",
         "copywriting",
         "motivation",
+        "evergreen-content",
+        "biography",
         "sourcebook",
         "short-video",
         "chinese"

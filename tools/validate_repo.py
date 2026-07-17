@@ -51,6 +51,8 @@ def main() -> int:
         SKILL_DIR / "agents" / "openai.yaml",
         SKILL_DIR / "references" / "style-system.md",
         SKILL_DIR / "references" / "book-of-elon-sourcebook.md",
+        SKILL_DIR / "references" / "evergreen-content-engine.md",
+        SKILL_DIR / "references" / "musk-life-relationships-sourcebook.md",
         SKILL_DIR / "references" / "rewrite-protocol.md",
         SKILL_DIR / "references" / "platform-adapters.md",
         SKILL_DIR / "references" / "musk-wisdom-system.md",
@@ -67,6 +69,16 @@ def main() -> int:
             "Sourcebook must contain at least 13 short quotations")
     for heading in ("## 来源等级", "## 创业时间线", "## 马斯克书单选题"):
         require(heading in sourcebook, f"Sourcebook is missing section: {heading}")
+
+    evergreen = (SKILL_DIR / "references" / "musk-life-relationships-sourcebook.md").read_text(encoding="utf-8")
+    require(len(re.findall(r"^### E\d{2}\b", evergreen, re.MULTILINE)) >= 30,
+            "Evergreen sourcebook must contain at least 30 fact cards")
+    for heading in ("## 来源等级", "## 快速检索路由", "## 公共来源入口", "## 发布前记录模板"):
+        require(heading in evergreen, f"Evergreen sourcebook is missing section: {heading}")
+
+    engine = (SKILL_DIR / "references" / "evergreen-content-engine.md").read_text(encoding="utf-8")
+    for heading in ("## 八个常青栏目", "## 自动选题流程", "## 隐私与敏感内容边界", "## 时效分级"):
+        require(heading in engine, f"Evergreen engine is missing section: {heading}")
 
     print(f"Repository is valid: {SKILL_NAME} v{version}")
     return 0
