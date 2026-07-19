@@ -53,6 +53,8 @@ def main() -> int:
         SKILL_DIR / "agents" / "openai.yaml",
         SKILL_DIR / "references" / "style-system.md",
         SKILL_DIR / "references" / "source-narration-system.md",
+        SKILL_DIR / "references" / "reaction-story-system.md",
+        SKILL_DIR / "references" / "musk-public-behavior-anchors.md",
         SKILL_DIR / "references" / "book-of-elon-sourcebook.md",
         SKILL_DIR / "references" / "evergreen-content-engine.md",
         SKILL_DIR / "references" / "musk-life-relationships-sourcebook.md",
@@ -66,12 +68,34 @@ def main() -> int:
     style_text = (SKILL_DIR / "references" / "style-system.md").read_text(encoding="utf-8")
     require("## 品牌声纹" in style_text and "你肯定不敢相信" in style_text,
             "Style system must define the signature hook system")
+    require("## 马斯克中心度" in style_text and "70/30叙事预算" in style_text,
+            "Style system must keep Musk at the narrative center")
+    require("合格的12句骨架" in style_text and "仍判定失败并重写" in style_text,
+            "Style system must include a concrete reaction-story regression pattern")
+    require("不得连续超过两句" in skill_text and "## 主角锁定" in skill_text,
+            "SKILL.md must prevent third-party facts from taking over the narrative")
+    require("M—E—M回环" in skill_text and "E类产品事实最多两句" in skill_text,
+            "SKILL.md must define the reaction-story center audit")
+    require("不要直接自由起稿" in skill_text and "判定句子类型时使用删除测试" in skill_text,
+            "SKILL.md must define the fixed reaction-story scaffold")
 
     narration = (SKILL_DIR / "references" / "source-narration-system.md").read_text(encoding="utf-8")
     for heading in ("## 核心原则", "## 四级来源路由", "## 前台口播规则", "## 原创与合规边界"):
         require(heading in narration, f"Source narration system is missing section: {heading}")
     require("单一媒体独家" in narration and "后台来源卡" in narration,
             "Source narration system must protect attribution and internal sourcing")
+
+    behavior_anchors = (SKILL_DIR / "references" / "musk-public-behavior-anchors.md").read_text(encoding="utf-8")
+    require(len(re.findall(r"^### A\d{2}\b", behavior_anchors, re.MULTILINE)) >= 5,
+            "Public behavior anchors must contain at least 5 evidence cards")
+    require("## 发布前检查" in behavior_anchors and "不可升级" in behavior_anchors,
+            "Public behavior anchors must define evidence limits")
+
+    reaction_system = (SKILL_DIR / "references" / "reaction-story-system.md").read_text(encoding="utf-8")
+    for heading in ("## 触发条件", "## 唯一允许的句位", "## 成稿闸门", "## Kimi回归闸门"):
+        require(heading in reaction_system, f"Reaction story system is missing section: {heading}")
+    require("2.8万亿" in reaction_system and "成稿禁止出现" in reaction_system,
+            "Reaction story system must protect the Kimi regression case")
 
     sourcebook = (SKILL_DIR / "references" / "book-of-elon-sourcebook.md").read_text(encoding="utf-8")
     require(len(re.findall(r"^### S\d{2}\b", sourcebook, re.MULTILINE)) >= 18,
