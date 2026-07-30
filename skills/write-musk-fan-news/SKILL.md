@@ -27,6 +27,8 @@ description: 将马斯克相关新闻、科技新闻、商业新闻、人物故�
 - 每次写作或诊断都读取 [style-system.md](references/style-system.md)。
 - 每次使用新闻、外部链接、媒体文章、动态数字或公开事件写作时，同时读取 [source-narration-system.md](references/source-narration-system.md)，把后台来源核验与前台口播表达分开。
 - 新闻起点是马斯克点赞、回复、转发、称赞或批评外部对象时，停止普通新闻结构，必须同时读取 [reaction-story-system.md](references/reaction-story-system.md) 与 [musk-public-behavior-anchors.md](references/musk-public-behavior-anchors.md)，通过专用成稿闸门后才能输出。
+- 反应型新闻完成带标签初稿后，必须运行 [validate_reaction_draft.py](scripts/validate_reaction_draft.py)；通过后再删除 `M1|`、`E1|`、`X1|` 等工作标签。
+- 选题前用 [content_ledger.py](scripts/content_ledger.py) 检查 [publishing-ledger.csv](assets/publishing-ledger.csv) 中近30天的重复主题；只有用户确认已经发布或明确要求记录时才写入台账，草稿不入账。
 - 用户没有提供材料、明确说没有新闻/直接写一个，或题目涉及童年、家庭、父母、兄弟姐妹、婚恋、子女、朋友、合伙人、对手和私人习惯时，同时读取 [evergreen-content-engine.md](references/evergreen-content-engine.md) 与 [musk-life-relationships-sourcebook.md](references/musk-life-relationships-sourcebook.md)。
 - 内容涉及马斯克历史、公司经历、人物选择、方法论、未来观点、推荐书单或直接引语时，同时读取 [book-of-elon-sourcebook.md](references/book-of-elon-sourcebook.md)。该文件较长，优先按公司名、主题词或S/M/Q编号检索。
 - 输入包含现成文案、视频字幕或其他账号内容时，同时读取 [rewrite-protocol.md](references/rewrite-protocol.md)。
@@ -100,6 +102,16 @@ M10 回到马斯克的人物结论
 
 人物证据门：除本次反应外，若找不到至少一个可核实的M4，就不能用外部技术细节填满90秒。优先读取 [musk-public-behavior-anchors.md](references/musk-public-behavior-anchors.md)，再检索马斯克原话、公司实践或 [book-of-elon-sourcebook.md](references/book-of-elon-sourcebook.md) 中可对应的历史行为；仍找不到时，缩成45—60秒，只解释本次动作，或更换选题。
 
+写完带标签初稿后运行：
+
+```powershell
+python "<skill目录>/scripts/validate_reaction_draft.py" "<带标签稿件路径>"
+```
+
+Kimi案例增加 `--case kimi`。脚本报错必须修改，警告必须人工复核；通过后才能删除工作标签。自动校验只负责结构、比例、已知事实禁区和高风险措辞，不能替代来源核验。
+
+`<skill目录>` 指当前 `SKILL.md` 所在目录，所有脚本路径都按它解析，不按会话工作目录猜测。若 `python` 不在 PATH，先尝试 `python3`；在 Codex Desktop 中可调用 `load_workspace_dependencies` 获取捆绑的 Python 可执行文件，再用完整路径运行同一脚本。
+
 ## 工作流
 
 ### 1. 确认输入
@@ -120,9 +132,9 @@ M10 回到马斯克的人物结论
 1. 有近期重大进展、明确新事实或强画面：使用新闻池。
 2. 新闻只是重复转述、无法核实或价值过低：使用常青人物池。
 3. 用户指定家庭、感情、孩子、父母、兄弟姐妹、朋友或习惯：直接使用常青人物池。
-4. 常青模式先从不同栏目生成5个候选题；有账号发布记录时，排除30天内重复的同一人物、事件和结论，再按人物中心、事实密度、反差、情绪、画面和争议安全评分。
+4. 常青模式先从不同栏目生成5个候选题；有账号发布记录时，对每个候选运行 `python "<skill目录>/scripts/content_ledger.py" check --topic "<主题>" --subject "<主体>" --event "<事件>" --conclusion "<结论>"`，排除近30天内主题、事件、结论三项中至少两项高度相似的内容，再按人物中心、事实密度、反差、情绪、画面和争议安全评分。
 5. 用户说“直接写”或“只要文案”时，在内部完成候选和评分，不展示过程。
-6. 没有发布记录时只能通过栏目轮换和冷门度降低重复概率，不能声称“已确认没有写过”；成稿后生成一行建议台账供后续维护。
+6. 没有发布记录时只能通过栏目轮换和冷门度降低重复概率，不能声称“已确认没有写过”；成稿后可生成一行建议台账，但只有用户确认发布或明确要求记录时，才运行 `python "<skill目录>/scripts/content_ledger.py" add ...`。
 7. 新闻池选题必须先写出一句“这件事证明了马斯克的什么行为或判断”；若只能写成对另一产品、公司或人物的介绍，降低背景比例或换题。
 
 ### 3. 建立来源层
@@ -274,6 +286,7 @@ M10 回到马斯克的人物结论
 - 是否有连续超过两句只讲其他产品、公司或人物？若有，能否压缩成2—3个证明事实并立即回到马斯克？
 - 标题、篇幅和最终结论是否都让观众记住马斯克，而不是新闻对象？
 - 若属于点赞、转发、回复、称赞或批评型新闻，是否已完成M/E/X逐句标记，E类是否不超过两句、每句后是否立即回到M？
+- 反应型带标签稿是否已经通过 `validate_reaction_draft.py`，专属案例是否传入对应 `--case`？
 - 使用“他一贯”“他从来”时，是否给出了当前动作之外的马斯克证据？
 - 是否有一个可看见的画面和一个可记住的数字？
 - 是否存在明确的旧做法与新做法冲突？
@@ -282,6 +295,7 @@ M10 回到马斯克的人物结论
 - 转述、直接引语和编辑者概括是否被清楚区分？
 - 使用书籍内容时，是否保留了S/M/Q编号、书页、源编号和等级供发布前检查？
 - 无新闻时是否真的切换了常青池，而不是编造一条伪新闻？
+- 是否检查了近30天发布台账，并避免把未发布草稿写入台账？
 - 常青稿是否包含一个关系、一个细节、三个事实节点和一个可争论命题？
 - 动态关系是否标注截止日期，未成年人和高敏信息是否已删除或降级处理？
 - 与来源是否发生结构、措辞和结论层面的重构？

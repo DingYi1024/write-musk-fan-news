@@ -2,7 +2,7 @@
 
 > 把马斯克相关新闻、科技新闻和已有账号内容，重构成“科技新闻外壳 + 马斯克人物叙事 + 可争论结论”的原创中文视频文案。统一以“你肯定不敢相信”建立账号声纹；后台核验来源，前台不写成媒体摘要。
 
-[![Version](https://img.shields.io/badge/version-0.3.4-2563EB.svg?style=flat-square)](VERSION)
+[![Version](https://img.shields.io/badge/version-0.4.0-2563EB.svg?style=flat-square)](VERSION)
 [![License](https://img.shields.io/badge/license-CC%20BY--NC%204.0-16A34A.svg?style=flat-square)](LICENSE)
 
 **支持 Codex、Claude Code，以及其他兼容 Agent Skills 的工具。**
@@ -133,7 +133,9 @@ $write-musk-fan-news
 | 建立账号声纹 | 固定“你肯定不敢相信”并连接每篇独有的反常事实 | 一秒可识别的留存钩子 |
 | 去除媒体摘要感 | 优先一手公开材料，第三方媒体留在后台核验 | 像自媒体观点稿而不是新闻简报 |
 | 保持马斯克中心 | 约七成叙事功能写人物，其他对象只保留2—3个证明事实 | 不再开头写马斯克、中段变成产品科普 |
-| 补足人物证据 | 调用A01—A05公开行为卡，证明更新判断、承认竞争与工程价值 | 不用空泛赞美替代马斯克事实 |
+| 补足人物证据 | 调用A01—A08公开行为卡，证明更新判断、承认竞争、开放生态与工程价值 | 不用空泛赞美替代马斯克事实 |
+| 自动拦截主角漂移 | 对反应型稿件执行M/E结构、结尾、Kimi禁区与高风险措辞检查 | 产品参数不会接管马斯克人物叙事 |
+| 检查近期重复 | 使用发布台账比较近30天的主题、事件和结论 | 减少同一事件换标题重复发布 |
 | 补充马斯克资料 | 从书籍来源库调用创业时间线、公司故事、方法、观点和书单 | 带书页与来源等级的背景素材 |
 | 引用马斯克 | 从短引语索引选择A级一手来源，或将二手内容改为转述 | 可追溯的短引语与中文译意 |
 | 重写对标账号文案 | 事实解包、观点清零、重选角度、重排因果 | 与来源结构明显不同的新稿 |
@@ -193,7 +195,7 @@ Skill会查来源，但默认不会在口播中连续写“路透社报道”“
 
 点赞、回复、转发、称赞和批评类新闻会切换到独立的反应型流水线，并覆盖普通新闻对数字、画面和时长的要求。默认只允许一句外部结果事实；第二句仅用于防止事实误导。Kimi回归题中只保留“48小时完成概念验证”，明确删除模型参数、工艺、吞吐和发布日期。
 
-仓库内置A01—A05公开行为证据卡。例如马斯克曾公开修正自己对比亚迪的旧判断、承认中国航天能力被低估，也曾强调SpaceX为Starlink竞争星座发射卫星时没有价格偏袒。这些卡片让“他如何评价竞争者”有事实支撑，但不会被夸大成绝对人格证明。
+仓库内置A01—A08公开行为证据卡。例如马斯克曾公开修正自己对比亚迪的旧判断、承认中国航天能力被低估，也曾强调SpaceX为Starlink竞争星座发射卫星时没有价格偏袒。这些卡片让“他如何评价竞争者”有事实支撑，但不会被夸大成绝对人格证明。
 
 ## 《The Book of Elon》不是只用来写鸡汤
 
@@ -314,6 +316,14 @@ write-musk-fan-news/
     └── write-musk-fan-news/
         ├── SKILL.md
         ├── agents/openai.yaml
+        ├── assets/
+        │   └── publishing-ledger.csv
+        ├── scripts/
+        │   ├── content_ledger.py
+        │   ├── validate_reaction_draft.py
+        │   └── fixtures/
+        │       ├── reaction-valid-kimi.txt
+        │       └── reaction-invalid-product-drift.txt
         └── references/
             ├── style-system.md
             ├── source-narration-system.md

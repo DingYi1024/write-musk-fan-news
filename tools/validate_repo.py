@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -51,6 +53,11 @@ def main() -> int:
 
     required_files = [
         SKILL_DIR / "agents" / "openai.yaml",
+        SKILL_DIR / "assets" / "publishing-ledger.csv",
+        SKILL_DIR / "scripts" / "content_ledger.py",
+        SKILL_DIR / "scripts" / "validate_reaction_draft.py",
+        SKILL_DIR / "scripts" / "fixtures" / "reaction-valid-kimi.txt",
+        SKILL_DIR / "scripts" / "fixtures" / "reaction-invalid-product-drift.txt",
         SKILL_DIR / "references" / "style-system.md",
         SKILL_DIR / "references" / "source-narration-system.md",
         SKILL_DIR / "references" / "reaction-story-system.md",
@@ -86,8 +93,8 @@ def main() -> int:
             "Source narration system must protect attribution and internal sourcing")
 
     behavior_anchors = (SKILL_DIR / "references" / "musk-public-behavior-anchors.md").read_text(encoding="utf-8")
-    require(len(re.findall(r"^### A\d{2}\b", behavior_anchors, re.MULTILINE)) >= 5,
-            "Public behavior anchors must contain at least 5 evidence cards")
+    require(len(re.findall(r"^### A\d{2}\b", behavior_anchors, re.MULTILINE)) >= 8,
+            "Public behavior anchors must contain at least 8 evidence cards")
     require("## 发布前检查" in behavior_anchors and "不可升级" in behavior_anchors,
             "Public behavior anchors must define evidence limits")
 
@@ -96,6 +103,84 @@ def main() -> int:
         require(heading in reaction_system, f"Reaction story system is missing section: {heading}")
     require("2.8万亿" in reaction_system and "成稿禁止出现" in reaction_system,
             "Reaction story system must protect the Kimi regression case")
+
+    reaction_validator = SKILL_DIR / "scripts" / "validate_reaction_draft.py"
+    valid_fixture = SKILL_DIR / "scripts" / "fixtures" / "reaction-valid-kimi.txt"
+    invalid_fixture = SKILL_DIR / "scripts" / "fixtures" / "reaction-invalid-product-drift.txt"
+    valid_result = subprocess.run(
+        [sys.executable, str(reaction_validator), str(valid_fixture), "--case", "kimi"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    require(valid_result.returncode == 0,
+            f"Valid reaction fixture failed:\n{valid_result.stdout}{valid_result.stderr}")
+    invalid_result = subprocess.run(
+        [sys.executable, str(reaction_validator), str(invalid_fixture), "--case", "kimi"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    require(invalid_result.returncode == 1,
+            "Invalid product-drift fixture must be rejected")
+
+    ledger_header = (SKILL_DIR / "assets" / "publishing-ledger.csv").read_text(
+        encoding="utf-8-sig"
+    ).splitlines()[0]
+    require(
+        ledger_header
+        == "publish_date,platform,pool,topic,subject,event,conclusion,source_url,status,notes",
+        "Publishing ledger header is incorrect",
+    )
+    ledger_script = SKILL_DIR / "scripts" / "content_ledger.py"
+    with tempfile.TemporaryDirectory() as temp_dir:
+        test_ledger = Path(temp_dir) / "ledger.csv"
+        add_result = subprocess.run(
+            [
+                sys.executable,
+                str(ledger_script),
+                "--ledger",
+                str(test_ledger),
+                "add",
+                "--publish-date",
+                "2026-07-19",
+                "--topic",
+                "马斯克点赞中国AI",
+                "--subject",
+                "马斯克",
+                "--event",
+                "公开点赞Kimi成果",
+                "--conclusion",
+                "马斯克尊重工程结果",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        require(add_result.returncode == 0,
+                f"Publishing ledger add failed:\n{add_result.stdout}{add_result.stderr}")
+        check_result = subprocess.run(
+            [
+                sys.executable,
+                str(ledger_script),
+                "--ledger",
+                str(test_ledger),
+                "check",
+                "--date",
+                "2026-07-30",
+                "--topic",
+                "马斯克点赞中国AI",
+                "--event",
+                "公开点赞Kimi成果",
+                "--conclusion",
+                "马斯克尊重工程结果",
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        require(check_result.returncode == 1,
+                "Publishing ledger must flag a matching recent topic")
 
     sourcebook = (SKILL_DIR / "references" / "book-of-elon-sourcebook.md").read_text(encoding="utf-8")
     require(len(re.findall(r"^### S\d{2}\b", sourcebook, re.MULTILINE)) >= 18,
